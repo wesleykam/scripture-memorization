@@ -1,0 +1,86 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color: var(--color-secondary);
+
+  background-image: url("./assets/stars.png");
+  background-size: cover;
+  background-color: var(--color-primary);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Colors */
+  --color-primary: #17001f;
+  --color-secondary: #ffffff;
+  --color-tertiary: #f0f0f0;
+  --color-quaternary: #f0f0f0;
+  --gray10: hsl(0, 0%, 10%);
+  --gray30: hsl(0, 0%, 30%);
+  --gray50: hsl(0, 0%, 50%);
+  --gray70: hsl(0, 0%, 70%);
+  --gray90: hsl(0, 0%, 90%);
+
+  /* Font-sizes */
+  --font-xxs: 0.75rem;
+  --font-xs: 0.875rem;
+  --font-sm: 1rem;
+  --font-md: 1.125rem;
+  --font-lg: 1.25rem;
+  --font-xl: 1.5rem;
+  --font-xxl: 2rem;
+
+  /* Margins */
+  --margin-xxs: 0.25rem;
+  --margin-xs: 0.5rem;
+  --margin-sm: 1rem;
+  --margin-md: 1.5rem;
+  --margin-lg: 2rem;
+  --margin-xl: 3rem;
+  --margin-xxl: 4rem;
+
+  /* Tags */
+  --ff: 'Inter', sans-serif;
+  --h1: bold 4rem/1em var(--ff);
+  --h2: bold 3/1.2em var(--ff);
+  --h3: bold 2.25rem/1.2em var(--ff);
+  --h4: bold 1.5rem/1.6em var(--ff);
+  --big: 1.25rem/1.6em var(--ff);
+  --p: 1rem/1.6em var(--ff);
+  --small: .75rem/2em var(--ff);
+}
+
+body {
+  height: 100vh;
+}
+
+h1 {
+  font: var(--h1);
+}
+
+h2 {
+  font: var(--h2);
+}
+
+h3 {
+  font: var(--h3);
+}
+
+h4 {
+  font: var(--h4);
+}
+
+p {
+  font: var(--p);
+}
+
+
