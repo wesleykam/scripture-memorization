@@ -1,0 +1,25 @@
+.menu-section {
+    position: absolute;
+    right: 0;
+
+    background-color: var(--color-tertiary);
+
+    width:30%;
+    height: 100vh;
+
+    padding: var(--padding-md);
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    box-sizing: border-box;
+}
+
+button.game-start {
+    width: 50%;
+
+    align-self: center;
+}
