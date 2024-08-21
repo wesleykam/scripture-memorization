@@ -8,6 +8,8 @@
   line-height: 1.5;
   font-weight: 400;
 
+  overflow-x: hidden;
+
   color: var(--color-secondary);
 
   background-image: url("./assets/stars.png");
@@ -22,7 +24,7 @@
   /* Colors */
   --color-primary: #17001f;
   --color-secondary: #ffffff;
-  --color-tertiary: #f0f0f0;
+  --color-tertiary: #90005b;
   --color-quaternary: #f0f0f0;
   --gray10: hsl(0, 0%, 10%);
   --gray30: hsl(0, 0%, 30%);
@@ -48,10 +50,19 @@
   --margin-xl: 3rem;
   --margin-xxl: 4rem;
 
+  /* Paddings */
+  --padding-xxs: 0.25rem;
+  --padding-xs: 0.5rem;
+  --padding-sm: 1rem;
+  --padding-md: 1.5rem;
+  --padding-lg: 2rem;
+  --padding-xl: 3rem;
+  --padding-xxl: 4rem;
+
   /* Tags */
   --ff: 'Inter', sans-serif;
   --h1: bold 4rem/1em var(--ff);
-  --h2: bold 3/1.2em var(--ff);
+  --h2: bold 3rem/1.2em var(--ff);
   --h3: bold 2.25rem/1.2em var(--ff);
   --h4: bold 1.5rem/1.6em var(--ff);
   --big: 1.25rem/1.6em var(--ff);
@@ -81,6 +92,15 @@ h4 {
 
 p {
   font: var(--p);
+}
+
+button {
+  font: var(--p);
+  cursor: pointer;
+
+  padding: var(--padding-xs) var(--padding-sm);
+  border: none;
+  border-radius: 5px;
 }
 
 

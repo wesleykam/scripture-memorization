@@ -1,11 +1,12 @@
+import Menu from './sections/menu';
 
-function App() {
+const App = () => {
+    return (
+        <>
+            <Menu />
+            <h1>Scripture Memorization</h1>
+        </>
+    );
+};
 
-  return (
-    <>
-      <h1>Scripture Memorization App</h1>
-    </>
-  )
-}
-
-export default App
+export default App;
