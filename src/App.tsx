@@ -6,7 +6,6 @@ const App = () => {
         <>
             <Game />
             <Menu />
-            <h1>Scripture Memorization</h1>
         </>
     );
 };

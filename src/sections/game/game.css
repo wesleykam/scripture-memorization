@@ -3,6 +3,9 @@
 
     height: 100vh;
     width: 100%;
+
+    display: flex;
+    justify-content: center;
 }
 
 .spaceship {
@@ -32,4 +35,26 @@
 .spaceship img {
     width: 100%;
     height: 100%;
+}
+
+.user-input {
+    display: flex;
+    gap: var(--margin-xxs);
+
+    height: 3rem;
+
+    margin-top: var(--margin-lg);
+}
+
+.cursor {
+    width: 1.5rem;
+    border-bottom: solid 5px white;
+
+    animation: blink 1s infinite;
+    animation-timing-function: cubic-bezier(1, 0, 0, 1);
+}
+
+@keyframes blink {
+    from { opacity: 1; }
+    to { opacity: 0; }
 }
