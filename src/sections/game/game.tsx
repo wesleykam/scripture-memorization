@@ -8,6 +8,7 @@ const game = () => {
     const [input, setInput] = useState('');
 
     useEffect(() => {
+        // add an event listener to the document to listen for key presses
         document.body.addEventListener('keydown', (e: KeyboardEvent) => {
             // prevent repeating key presses
             if (e.repeat) return;
