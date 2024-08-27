@@ -38,6 +38,8 @@
 }
 
 .user-input {
+    position: absolute;
+
     display: flex;
     gap: var(--margin-xxs);
 
