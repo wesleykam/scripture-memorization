@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import spaceship from '../../assets/spaceship.png';
+import OvalPoints from '../../functions/asteroidLogic/asteroidLogic';
 
 import './game.css';
 
@@ -20,9 +21,10 @@ const game = () => {
 
     return (
         <section className="game-section">
+            <OvalPoints />
             <div className="user-input">
                 <h2>{input}</h2>
-                <div className='cursor'></div>
+                <div className="cursor"></div>
             </div>
             <div className="spaceship">
                 <img src={spaceship}></img>
