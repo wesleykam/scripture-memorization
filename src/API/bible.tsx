@@ -4,9 +4,9 @@ import axios from 'axios';
 
 interface Verse {
     book: string;
-    chapter: string;
-    start_verse: string;
-    end_verse: string;
+    chapter: number;
+    start_verse: number;
+    end_verse: number;
 }
 
 const getVerses = (verse: Verse) => {
@@ -16,7 +16,16 @@ const getVerses = (verse: Verse) => {
         )
         .then((response) => {
             const data = response.data;
-            console.log(data);
+            if (verse.end_verse) {
+                for (let i = verse.start_verse - 1; i < verse.end_verse; i++) {
+                    console.log(data[i].verse);
+                }
+                return;
+            }
+            else {
+                console.log(data[verse.start_verse - 1].verse);
+                return;
+            }
         });
 };
 

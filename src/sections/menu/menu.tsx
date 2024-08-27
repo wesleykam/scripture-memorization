@@ -6,18 +6,18 @@ import './menu.css';
 
 interface Verse {
     book: string;
-    chapter: string;
-    start_verse: string;
-    end_verse: string;
+    chapter: number;
+    start_verse: number;
+    end_verse: number;
 }
 
 const menu = () => {
     const [isSliding, setIsSliding] = useState<boolean>(false);
     const [verse, setVerse] = useState<Verse>({
         book: 'Genesis',
-        chapter: '1',
-        start_verse: '1',
-        end_verse: '1',
+        chapter: 1,
+        start_verse: 1,
+        end_verse: 3,
     });
 
     const handleSlide = () => {
