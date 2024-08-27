@@ -16,6 +16,7 @@
     justify-content: space-between;
 
     box-sizing: border-box;
+    transition: transform 1s ease;
 }
 
 button.game-start {
@@ -23,3 +24,16 @@ button.game-start {
 
     align-self: center;
 }
+
+.sliding-div {
+    width: 200px;
+    height: 100px;
+    background-color: lightblue;
+    margin-top: 20px;
+    transition: transform 0.5s ease;
+  }
+  
+  .slide-right {
+    transform: translateX(100%);
+  }
+  

@@ -1,10 +1,22 @@
-import './menu.css';
+import "./menu.css";
+import React, { useState } from "react";
 
 const menu = () => {
-    return <section className='menu-section'>
+  const [isSliding, setIsSliding] = useState(false);
+  const handleSlide = () => {
+    setIsSliding(!isSliding);
+  };
+
+  return (
+    <>
+      <section className={`menu-section ${isSliding ? "slide-right" : ""}`}>
         <h2>Menu</h2>
-        <button className='game-start'>Start</button>
-    </section>;
+        <button className="button.game-start" onClick={handleSlide}>
+          {isSliding ? "Reset" : "Start"}
+        </button>
+      </section>
+    </>
+  );
 };
 
 export default menu;
