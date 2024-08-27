@@ -16,7 +16,7 @@
     justify-content: space-between;
 
     box-sizing: border-box;
-    transition: transform 0.5s ease;
+    transition: transform 2s ease;
 }
 
 button.game-start {
@@ -34,6 +34,6 @@ button.game-start {
   }
   
   .slide-left {
-    transform: translateX(-390%);
+    transform: translateX(100%);
   }
   
