@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import spaceship from '../../assets/spaceship.png';
-import OvalPoints from '../../functions/asteroidLogic/asteroidLogic';
+import OvalPoints from '../../components/asteroidLogic/asteroidLogic';
 
 import './game.css';
 
