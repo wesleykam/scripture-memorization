@@ -8,6 +8,10 @@ interface Point {
     y: number;
 }
 
+interface MovingPoint extends Point {
+    id: number; // unique identifier for each point
+}
+
 const OvalPoints: React.FC = () => {
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
@@ -41,26 +45,58 @@ const OvalPoints: React.FC = () => {
     const points = generateOvalPoints(numberOfPoints, radiusX, radiusY);
 
     // State to track the points that are currently visible
-    const [visiblePoints, setVisiblePoints] = useState<Point[]>([]);
+    const [visiblePoints, setVisiblePoints] = useState<MovingPoint[]>([]);
 
+    // Randomly spawn asteroid around the center 
     useEffect(() => {
+        let pointId = 0;
         const interval = setInterval(() => {
-            // Randomly select a point from the points array
             const randomIndex = Math.floor(Math.random() * points.length);
             const selectedPoint = points[randomIndex];
 
-            // Add the selected point to the visible points array if it's not already there
-            setVisiblePoints((prevPoints) => {
-                if (!prevPoints.includes(selectedPoint)) {
-                    return [...prevPoints, selectedPoint];
-                }
-                return prevPoints;
-            });
-        }, 1000); // Add a new point every second
+            setVisiblePoints((prevPoints) => [
+                ...prevPoints,
+                { ...selectedPoint, id: pointId++ },
+            ]);
+            
+            // Stop adding points once we reach the desired number of points
+            if (pointId >= 5) {
+                clearInterval(interval);
+            }
+        }, 1000);
+        
 
-        // Clean up the interval on component unmount
-        return () => clearInterval(interval);
-    }, [points]);
+
+    }, []);
+
+    // Move Asteroids towards the center of the page
+    useEffect(() => {
+        const movePoints = () => {
+            setVisiblePoints((prevPoints) =>
+                prevPoints.map((point) => {
+                    const dx = centerX - point.x;
+                    const dy = centerY - point.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    // Determine how much to move the point towards the center
+                    const speed = 2; // Adjust speed as necessary
+                    const moveX = (dx / distance) * speed;
+                    const moveY = (dy / distance) * speed;
+
+                    return {
+                        ...point,
+                        x: point.x + moveX,
+                        y: point.y + moveY,
+                    };
+                })
+            );
+
+            requestAnimationFrame(movePoints);
+        };
+
+        const animationId = requestAnimationFrame(movePoints);
+        return () => cancelAnimationFrame(animationId);
+    }, [centerX, centerY]);
 
     return (
         <div>
