@@ -9,7 +9,7 @@ const menu = () => {
 
   return (
     <>
-      <section className={`menu-section ${isSliding ? "slide-left" : ""}`}>
+      <section className={`menu-section ${isSliding ? "slide-right" : ""}`}>
         <h2>Menu</h2>
         <button className="button.game-start" onClick={handleSlide}>
           {isSliding ? "Reset" : "Start"}
