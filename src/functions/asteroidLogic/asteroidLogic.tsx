@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import asteroid1 from '../../assets/asteroid1.png';
 
 import './asteroidLogic.css';
@@ -22,6 +22,8 @@ const OvalPoints: React.FC = () => {
     const radiusX = screenWidth * 0.45; // horizontal radius
     const radiusY = screenHeight * 0.4; // vertical radius
     const numberOfPoints = 20; // number of points around the oval
+
+    const isAnimationStopped = useRef(false); // useRef to track animation state
 
     // Function to generate points around the oval
     const generateOvalPoints = (
@@ -47,36 +49,47 @@ const OvalPoints: React.FC = () => {
     // State to track the points that are currently visible
     const [visiblePoints, setVisiblePoints] = useState<MovingPoint[]>([]);
 
-    // Randomly spawn asteroid around the center 
+    // Randomly spawn asteroid around the center
     useEffect(() => {
         let pointId = 0;
         const interval = setInterval(() => {
+            if (isAnimationStopped.current) return; // Stop spawning new circles
+
             const randomIndex = Math.floor(Math.random() * points.length);
             const selectedPoint = points[randomIndex];
 
             setVisiblePoints((prevPoints) => [
                 ...prevPoints,
-                { ...selectedPoint, id: pointId++ },
+                { ...selectedPoint, id: pointId++},
             ]);
-            
+
             // Stop adding points once we reach the desired number of points
             if (pointId >= 5) {
                 clearInterval(interval);
             }
         }, 1000);
-        
-
-
     }, []);
 
     // Move Asteroids towards the center of the page
     useEffect(() => {
         const movePoints = () => {
+            if (isAnimationStopped.current) return; // Stop moving circles
+
             setVisiblePoints((prevPoints) =>
                 prevPoints.map((point) => {
+
                     const dx = centerX - point.x;
                     const dy = centerY - point.y;
                     const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    // Check if the point has reached the center
+                    const threshold = 100; // Adjust the threshold as necessary
+                    if (distance < threshold) {
+                        console.log(
+                            `Point ${point.id} has reached the center.`
+                        );
+                        isAnimationStopped.current = true; // Stop all animations
+                    }
 
                     // Determine how much to move the point towards the center
                     const speed = 2; // Adjust speed as necessary
@@ -96,7 +109,7 @@ const OvalPoints: React.FC = () => {
 
         const animationId = requestAnimationFrame(movePoints);
         return () => cancelAnimationFrame(animationId);
-    }, [centerX, centerY]);
+    }, []);
 
     return (
         <div>
