@@ -20,12 +20,27 @@ const game = () => {
         book: 'Genesis',
         chapter: 1,
         start_verse: 1,
-        end_verse: 0,
+        end_verse: 3,
     });
 
     useEffect(() => {
         // add an event listener to the document to listen for key presses
         document.body.addEventListener('keydown', (e: KeyboardEvent) => {
+            // ctrl + backspace to clear input
+            if (e.ctrlKey && e.key === 'Backspace') {
+                setInput('');
+                return;
+            }
+            
+            // Enable Backspace
+            if (e.key === 'Backspace') {
+                setInput((prev) => prev.slice(0, -1));
+                return;
+            }
+            
+            // only allow alphabet characters
+            if (!e.key.match(/^[a-zA-Z]$/)) return;
+
             // prevent repeating key presses
             if (e.repeat) return;
 
@@ -36,7 +51,7 @@ const game = () => {
 
     return (
         <section className="game-section">
-            {gameState === 1 ? <Asteroids verse={verse} /> : <></>}
+            {gameState === 1 ? <Asteroids verse={verse} input={input} setInput={setInput}/> : <></>}
             <div className="user-input">
                 <h2>{input}</h2>
                 <div className="cursor"></div>
