@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import asteroid1 from '../../assets/asteroid1.png';
 
 import './asteroidLogic.css';
+import getVerses from '../../API/bible';
 
 interface Point {
     x: number;
@@ -10,9 +11,21 @@ interface Point {
 
 interface MovingPoint extends Point {
     id: number; // unique identifier for each point
+    word: string; // word associated with the point
 }
 
-const Asteroids: React.FC = () => {
+interface Verse {
+    book: string;
+    chapter: number;
+    start_verse: number;
+    end_verse: number;
+}
+
+interface AsteroidProps {
+    verse: Verse;
+}
+
+const Asteroids = ({ verse }: AsteroidProps) => {
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
 
@@ -20,7 +33,7 @@ const Asteroids: React.FC = () => {
     const centerY = screenHeight / 2;
 
     const radiusX = screenWidth * 0.45; // horizontal radius
-    const radiusY = screenHeight * 0.4; // vertical radius
+    const radiusY = screenHeight * 0.45; // vertical radius
     const numberOfPoints = 20; // number of points around the oval
 
     const isAnimationStopped = useRef(false); // useRef to track animation state
@@ -52,22 +65,32 @@ const Asteroids: React.FC = () => {
     // Randomly spawn asteroid around the center
     useEffect(() => {
         let pointId = 0;
-        const interval = setInterval(() => {
-            if (isAnimationStopped.current) return; // Stop spawning new circles
+        let verseWords: string[] = [];
+        getVerses(verse).then((data) => {
+            verseWords = data;
+            console.log(verseWords);
+            const interval = setInterval(() => {
+                if (isAnimationStopped.current) return; // Stop spawning new circles
 
-            const randomIndex = Math.floor(Math.random() * points.length);
-            const selectedPoint = points[randomIndex];
+                const randomIndex = Math.floor(Math.random() * points.length);
+                const selectedPoint = points[randomIndex];
 
-            setVisiblePoints((prevPoints) => [
-                ...prevPoints,
-                { ...selectedPoint, id: pointId++},
-            ]);
+                setVisiblePoints((prevPoints) => [
+                    ...prevPoints,
+                    {
+                        ...selectedPoint,
+                        id: pointId,
+                        word: verseWords[pointId++],
+                    },
+                ]);
 
-            // Stop adding points once we reach the desired number of points
-            if (pointId >= 5) {
-                clearInterval(interval);
-            }
-        }, 1000);
+                // Stop adding points once we reach the desired number of points
+                if (pointId >= verseWords.length - 1) {
+                    clearInterval(interval);
+                    console.log('all asteroids spawned');
+                }
+            }, 1000);
+        });
     }, []);
 
     // Move Asteroids towards the center of the page
@@ -77,7 +100,6 @@ const Asteroids: React.FC = () => {
 
             setVisiblePoints((prevPoints) =>
                 prevPoints.map((point) => {
-
                     const dx = centerX - point.x;
                     const dy = centerY - point.y;
                     const distance = Math.sqrt(dx * dx + dy * dy);
@@ -92,7 +114,7 @@ const Asteroids: React.FC = () => {
                     }
 
                     // Determine how much to move the point towards the center
-                    const speed = 2; // Adjust speed as necessary
+                    const speed = 0.5; // Adjust speed as necessary
                     const moveX = (dx / distance) * speed;
                     const moveY = (dy / distance) * speed;
 
@@ -114,17 +136,18 @@ const Asteroids: React.FC = () => {
     return (
         <div>
             {visiblePoints.map((point, index) => (
-                <img
+                <div
                     key={index}
                     className="asteroid"
                     style={{
                         position: 'absolute',
                         left: `${point.x}px`,
                         top: `${point.y}px`,
-                        width: '100px',
                     }}
-                    src={asteroid1}
-                />
+                >
+                    <img className="asteroid-image" src={asteroid1} />
+                    <div className="asteroid-word">{point.word}</div>
+                </div>
             ))}
         </div>
     );
