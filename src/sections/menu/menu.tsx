@@ -15,7 +15,7 @@ interface MenuProps {
     verse: Verse;
 }
 
-const menu = ({gameState, verseState, verse}: MenuProps) => {
+const menu = ({gameState}: MenuProps) => {
 
     const [isSliding, setIsSliding] = useState<boolean>(false);
 
