@@ -27,7 +27,7 @@ interface AsteroidProps {
     setInput: (input: string) => void;
 }
 
-const Asteroids = ({ verse , input, setInput }: AsteroidProps) => {
+const Asteroids = ({ verse, input, setInput }: AsteroidProps) => {
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
 
@@ -63,17 +63,24 @@ const Asteroids = ({ verse , input, setInput }: AsteroidProps) => {
 
     // State to track the points that are currently visible
     const [visiblePoints, setVisiblePoints] = useState<MovingPoint[]>([]);
+    const [pointId, setPointId] = useState(0);
+    const [verseWords, setVerseWords] = useState<string[]>([]);
 
     // Randomly spawn asteroid around the center
     useEffect(() => {
-        let pointId = 0;
-        let verseWords: string[] = [];
         getVerses(verse).then((data) => {
-            verseWords = data;
-            console.log(verseWords);
-            const interval = setInterval(() => {
-                if (isAnimationStopped.current) return; // Stop spawning new circles
+            setVerseWords(data);
+        });
+    }, [verse]);
 
+    useEffect(() => {
+        console.log(verseWords.length);
+        if (verseWords.length === 0) return; // Ensure verseWords is loaded
+
+        const interval = setInterval(() => {
+            if (isAnimationStopped.current) return; // Stop spawning new circles
+
+            setPointId((prevId) => {
                 const randomIndex = Math.floor(Math.random() * points.length);
                 const selectedPoint = points[randomIndex];
 
@@ -81,19 +88,41 @@ const Asteroids = ({ verse , input, setInput }: AsteroidProps) => {
                     ...prevPoints,
                     {
                         ...selectedPoint,
-                        id: pointId,
-                        word: verseWords[pointId++],
+                        id: prevId,
+                        word: verseWords[prevId], // Use the latest verseWords here
                     },
                 ]);
 
                 // Stop adding points once we reach the desired number of points
-                if (pointId >= verseWords.length - 1) {
+                if (prevId >= verseWords.length - 1) {
                     clearInterval(interval);
                     console.log('all asteroids spawned');
                 }
-            }, 1000);
-        });
-    }, []);
+
+                return prevId + 1; // Increment pointId
+            });
+        }, 1000); // Adjust the interval as necessary
+    }, [verseWords]); // Re-run this effect when verseWords or points change
+
+    useEffect(() => {
+        if (visiblePoints.length === 0 && pointId < verseWords.length-1) {
+            setPointId((prevId) => {
+                const randomIndex = Math.floor(Math.random() * points.length);
+                const selectedPoint = points[randomIndex];
+
+                setVisiblePoints((prevPoints) => [
+                    ...prevPoints,
+                    {
+                        ...selectedPoint,
+                        id: prevId,
+                        word: verseWords[prevId], // Use the latest verseWords here
+                    },
+                ]);
+
+                return prevId + 1; // Increment pointId
+            });
+        }
+    }, [visiblePoints]);
 
     // Move Asteroids towards the center of the page
     useEffect(() => {
@@ -135,16 +164,17 @@ const Asteroids = ({ verse , input, setInput }: AsteroidProps) => {
         return () => cancelAnimationFrame(animationId);
     }, []);
 
-    useEffect(() => { 
+    useEffect(() => {
+        console.log(visiblePoints.length);
+        console.log(pointId);
+        console.log(verseWords);
         if (input === '') return;
-        
+
         if (input === visiblePoints[0].word) {
             setVisiblePoints((prevPoints) => prevPoints.slice(1));
             setInput('');
-        }   
-
+        }
     }, [input]);
-
 
     return (
         <div>
