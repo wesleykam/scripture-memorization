@@ -19,9 +19,12 @@ const menu = ({gameState, verseState, verse}: MenuProps) => {
 
     const [isSliding, setIsSliding] = useState<boolean>(false);
 
-    const handleSlide = () => {
+    const handleSlide = (e: React.MouseEvent<HTMLButtonElement>) => {
         setIsSliding(!isSliding);
         gameState(1);
+
+        // unfocus the button
+        (e.target as HTMLButtonElement).blur();
     };
 
     return (

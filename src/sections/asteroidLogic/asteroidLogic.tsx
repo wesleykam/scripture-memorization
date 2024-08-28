@@ -23,9 +23,11 @@ interface Verse {
 
 interface AsteroidProps {
     verse: Verse;
+    input: string;
+    setInput: (input: string) => void;
 }
 
-const Asteroids = ({ verse }: AsteroidProps) => {
+const Asteroids = ({ verse , input, setInput }: AsteroidProps) => {
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
 
@@ -132,6 +134,17 @@ const Asteroids = ({ verse }: AsteroidProps) => {
         const animationId = requestAnimationFrame(movePoints);
         return () => cancelAnimationFrame(animationId);
     }, []);
+
+    useEffect(() => { 
+        if (input === '') return;
+        
+        if (input === visiblePoints[0].word) {
+            setVisiblePoints((prevPoints) => prevPoints.slice(1));
+            setInput('');
+        }   
+
+    }, [input]);
+
 
     return (
         <div>
