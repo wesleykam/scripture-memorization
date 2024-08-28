@@ -1,7 +1,5 @@
 import { useState } from 'react';
 
-import getVerses from '../../API/bible';
-
 import './menu.css';
 
 interface Verse {
@@ -13,20 +11,15 @@ interface Verse {
 
 interface MenuProps {
     gameState: (state: number) => void;
+    verseState: (verse: Verse) => void;
+    verse: Verse;
 }
 
-const menu = ({gameState}: MenuProps) => {
+const menu = ({gameState, verseState, verse}: MenuProps) => {
 
     const [isSliding, setIsSliding] = useState<boolean>(false);
-    const [verse, setVerse] = useState<Verse>({
-        book: 'Genesis',
-        chapter: 1,
-        start_verse: 1,
-        end_verse: 0,
-    });
 
     const handleSlide = () => {
-        getVerses(verse);
         setIsSliding(!isSliding);
         gameState(1);
     };

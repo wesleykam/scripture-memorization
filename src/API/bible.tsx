@@ -12,9 +12,11 @@ interface Verse {
 const getVerses = (verse: Verse) => {
     let wordArray: string[] = [];
 
-    axios
+    return axios
         .get(
-            `https://bible-go-api.rkeplin.com/v1/books/${bible_books_index[verse.book]}/chapters/${verse.chapter}?translation=NIV`
+            `https://bible-go-api.rkeplin.com/v1/books/${
+                bible_books_index[verse.book]
+            }/chapters/${verse.chapter}?translation=NIV`
         )
         .then((response) => {
             const data = response.data;
@@ -31,18 +33,18 @@ const getVerses = (verse: Verse) => {
                     wordArray = wordArray.concat(words); // Combine the arrays
                 });
 
-                return;
-            }
-            else {
+                return wordArray;
+            } else {
                 console.log(data[verse.start_verse - 1].verse);
-                const cleanVerse = data[verse.start_verse - 1].verse.replace(/[^a-zA-Z\s]/g, '');
+                const cleanVerse = data[verse.start_verse - 1].verse.replace(
+                    /[^a-zA-Z\s]/g,
+                    ''
+                );
                 wordArray = cleanVerse.split(/\s+/);
-                
-                return;
+
+                return wordArray;
             }
         });
-
-    return wordArray;
 };
 
 export default getVerses;
