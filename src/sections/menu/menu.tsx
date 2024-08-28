@@ -11,18 +11,24 @@ interface Verse {
     end_verse: number;
 }
 
-const menu = () => {
+interface MenuProps {
+    gameState: (state: number) => void;
+}
+
+const menu = ({gameState}: MenuProps) => {
+
     const [isSliding, setIsSliding] = useState<boolean>(false);
     const [verse, setVerse] = useState<Verse>({
         book: 'Genesis',
         chapter: 1,
         start_verse: 1,
-        end_verse: 3,
+        end_verse: 0,
     });
 
     const handleSlide = () => {
         getVerses(verse);
         setIsSliding(!isSliding);
+        gameState(1);
     };
 
     return (

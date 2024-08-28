@@ -12,7 +12,7 @@ interface MovingPoint extends Point {
     id: number; // unique identifier for each point
 }
 
-const OvalPoints: React.FC = () => {
+const Asteroids: React.FC = () => {
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
 
@@ -130,4 +130,4 @@ const OvalPoints: React.FC = () => {
     );
 };
 
-export default OvalPoints;
+export default Asteroids;
