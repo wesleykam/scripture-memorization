@@ -27,15 +27,18 @@ interface MovingPoint extends Point {
 const Game = () => {
     const [input, setInput] = useState('');
     const [gameState, setGameState] = useState(0); // 0 = not started, 1 = playing, 2 = win, 3 = lose
-    const [verse, setVerse] = useState<Verse>({
+
+    const verse = useRef<Verse>({
         book: 'Genesis',
         chapter: 1,
         start_verse: 1,
         end_verse: 0,
     });
+    const typingMode = useRef(1); // 0 = Regular, 1 = Typeracer
+
     const nextWordRef = useRef('');
     const [visiblePoints, setVisiblePoints] = useState<MovingPoint[]>([]);
-    const [pointId, setPointId] = useState(0);
+    const pointId = useRef(0);
     const [verseWords, setVerseWords] = useState<string[]>([]);
 
     const screenWidth = window.innerWidth;
@@ -70,90 +73,113 @@ const Game = () => {
     useEffect(() => {
         if (gameState === 0) {
             setVisiblePoints([]);
-            setPointId(0);
+            pointId.current = 0;
             setVerseWords([]);
 
             return;
-        }; // Do not fetch if game is not started
+        } // Do not fetch if game is not started
 
         if (verseWords.length > 0) return; // Do not fetch if verseWords is already
 
-        getVerses(verse).then((data) => {
+        getVerses(verse.current).then((data) => {
             setVerseWords(data);
         });
     }, [gameState]);
 
+    // Spawn asteroids on an interval
     useEffect(() => {
         if (verseWords.length === 0) return; // Ensure verseWords is loaded
 
-        nextWordRef.current = verseWords[0].toLowerCase();
+        // Set the first word to type
+        if (typingMode.current === 0) nextWordRef.current = verseWords[0];
+        if (typingMode.current === 1)
+            nextWordRef.current = verseWords[0].toLowerCase();
 
         const interval = setInterval(() => {
             if (isAnimationStopped.current) return; // Stop spawning new circles
 
-            setPointId((prevId) => {
-                const randomIndex = Math.floor(Math.random() * points.length);
-                const selectedPoint = points[randomIndex];
+            if (pointId.current >= verseWords.length - 1) {
+                clearInterval(interval);
+                console.log('all asteroids spawned');
+                return;
+            }
 
-                setVisiblePoints((prevPoints) => [
-                    ...prevPoints,
-                    {
-                        ...selectedPoint,
-                        id: prevId,
-                        word: verseWords[prevId], // Use the latest verseWords here
-                    },
-                ]);
+            const randomIndex = Math.floor(Math.random() * points.length);
+            const selectedPoint = points[randomIndex];
 
-                // Stop adding points once we reach the desired number of points
-                if (prevId >= verseWords.length - 1) {
-                    clearInterval(interval);
-                    console.log('all asteroids spawned');
-                }
-
-                return prevId + 1; // Increment pointId
-            });
+            setVisiblePoints((prevPoints) => [
+                ...prevPoints,
+                {
+                    ...selectedPoint,
+                    id: pointId.current,
+                    word: verseWords[pointId.current++], // Use the latest verseWords here
+                },
+            ]);
         }, 1000); // Adjust the interval as necessary
     }, [verseWords]); // Re-run this effect when verseWords or points change
 
+    // Spawn asteroid immediately when empty
     useEffect(() => {
-        if (visiblePoints.length === 0 && pointId < verseWords.length) {
-            setPointId((prevId) => {
-                const randomIndex = Math.floor(Math.random() * points.length);
-                const selectedPoint = points[randomIndex];
+        console.log(visiblePoints.length);
+        if (
+            pointId.current > 0 &&
+            visiblePoints.length === 0 &&
+            pointId.current < verseWords.length
+        ) {
+            const randomIndex = Math.floor(Math.random() * points.length);
+            const selectedPoint = points[randomIndex];
 
-                setVisiblePoints((prevPoints) => [
-                    ...prevPoints,
-                    {
-                        ...selectedPoint,
-                        id: prevId,
-                        word: verseWords[prevId], // Use the latest verseWords here
-                    },
-                ]);
-
-                return prevId + 1; // Increment pointId
-            });
+            setVisiblePoints((prevPoints) => [
+                ...prevPoints,
+                {
+                    ...selectedPoint,
+                    id: pointId.current,
+                    word: verseWords[pointId.current++], // Use the latest verseWords here
+                },
+            ]);
         }
-    }, [visiblePoints]);
+    }, [visiblePoints.length]);
 
     useEffect(() => {
         if (input === '') return;
 
         setVisiblePoints((prevPoints) => {
-            // Only proceed if `nextWordRef.current` is empty
-            if (nextWordRef.current.length === 0) {
-                // Update `nextWordRef.current` with the new word
-                const updatedPoints = prevPoints.slice(1);
-                if (updatedPoints.length > 0) {
-                    nextWordRef.current =
-                        verseWords[updatedPoints[0].id].toLowerCase();
-                } else {
-                    nextWordRef.current = pointId < verseWords.length ? verseWords[pointId].toLowerCase() : '';
+            if (typingMode.current === 0) {
+                if (input === nextWordRef.current) {
+                    const updatedPoints = prevPoints.slice(1);
+                    if (updatedPoints.length > 0) {
+                        nextWordRef.current = verseWords[updatedPoints[0].id];
+                    } else {
+                        nextWordRef.current =
+                            pointId.current < verseWords.length
+                                ? verseWords[pointId.current]
+                                : '';
+                    }
+                    setInput('');
+                    return updatedPoints;
                 }
+            }
 
-                // Clear input
-                setInput('');
+            if (typingMode.current === 1) {
+                // Only proceed if `nextWordRef.current` is empty
+                if (nextWordRef.current.length === 0) {
+                    // Update `nextWordRef.current` with the new word
+                    const updatedPoints = prevPoints.slice(1);
+                    if (updatedPoints.length > 0) {
+                        nextWordRef.current =
+                            verseWords[updatedPoints[0].id].toLowerCase();
+                    } else {
+                        nextWordRef.current =
+                            pointId.current < verseWords.length
+                                ? verseWords[pointId.current].toLowerCase()
+                                : '';
+                    }
 
-                return updatedPoints; // Return the new state for `visiblePoints`
+                    // Clear input
+                    setInput('');
+
+                    return updatedPoints; // Return the new state for `visiblePoints`
+                }
             }
 
             return prevPoints;
@@ -204,16 +230,39 @@ const Game = () => {
         document.body.addEventListener('keydown', (e: KeyboardEvent) => {
             if (nextWordRef.current.length === 0) return; // Ensure verseWords is loaded
 
-            // only allow alphabet characters
-            if (!e.key.match(/^[a-zA-Z]$/)) return;
+            if (typingMode.current === 0) {
+                // backspace
+                if (e.ctrlKey && e.key === 'Backspace') {
+                    setInput('');
+                    return;
+                }
 
-            // prevent repeating key presses
-            if (e.repeat) return;
+                if (e.key === 'Backspace') {
+                    setInput((prev) => prev.slice(0, -1));
+                    return;
+                }
 
-            // append the key pressed to the input state if equal to next letter in nextWord
-            if (e.key === nextWordRef.current[0]) {
+                // only allow alphabet characters
+                if (!e.key.match(/^[a-zA-Z]$/)) return;
+
+                // prevent repeating key presses
+                if (e.repeat) return;
+
                 setInput((prev) => prev + e.key);
-                nextWordRef.current = nextWordRef.current.slice(1);
+            }
+
+            if (typingMode.current === 1) {
+                // only allow alphabet characters
+                if (!e.key.match(/^[a-zA-Z]$/)) return;
+
+                // prevent repeating key presses
+                if (e.repeat) return;
+
+                // append the key pressed to the input state if equal to next letter in nextWord
+                if (e.key === nextWordRef.current[0]) {
+                    setInput((prev) => prev + e.key);
+                    nextWordRef.current = nextWordRef.current.slice(1);
+                }
             }
         });
     }, []);
@@ -247,11 +296,7 @@ const Game = () => {
             <div className="spaceship">
                 <img src={spaceship} />
             </div>
-            <Menu
-                gameState={setGameState}
-                verseState={setVerse}
-                verse={verse}
-            />
+            <Menu setGameState={setGameState} verse={verse} />
         </section>
     );
 };

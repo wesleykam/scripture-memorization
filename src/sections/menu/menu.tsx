@@ -10,18 +10,16 @@ interface Verse {
 }
 
 interface MenuProps {
-    gameState: (state: number) => void;
-    verseState: (verse: Verse) => void;
-    verse: Verse;
+    setGameState: (state: number) => void;
+    verse: React.MutableRefObject<Verse>;
 }
 
-const menu = ({gameState}: MenuProps) => {
-
+const menu = ({ setGameState }: MenuProps) => {
     const [isSliding, setIsSliding] = useState<boolean>(false);
 
     const handleSlide = (e: React.MouseEvent<HTMLButtonElement>) => {
         setIsSliding(!isSliding);
-        gameState(1);
+        setGameState(1);
 
         // unfocus the button
         (e.target as HTMLButtonElement).blur();
@@ -38,8 +36,8 @@ const menu = ({gameState}: MenuProps) => {
                     the correct order.
                 </p>
                 <p>
-                    Only correct inputs will be read to assist with
-                    typing. All words are read as lowercase so do not use the Shift key
+                    Only correct inputs will be read to assist with typing. All
+                    words are read as lowercase so do not use the Shift key
                 </p>
                 <button className="button.game-start" onClick={handleSlide}>
                     {isSliding ? 'Reset' : 'Start'}
