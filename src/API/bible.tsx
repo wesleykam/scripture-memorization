@@ -14,7 +14,7 @@ const getVerses = (verse: Verse) => {
 
     return axios
         .get(
-            `/api/v1/books/${
+            `https://bible-go-api.rkeplin.com/v1/books/${
                 bible_books_index[verse.book]
             }/chapters/${verse.chapter}?translation=NIV`
         )
