@@ -31,7 +31,7 @@ const Game = () => {
         book: 'Genesis',
         chapter: 1,
         start_verse: 1,
-        end_verse: 3,
+        end_verse: 0,
     });
     const nextWordRef = useRef('');
     const [visiblePoints, setVisiblePoints] = useState<MovingPoint[]>([]);
