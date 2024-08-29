@@ -233,7 +233,7 @@ const Game = () => {
                             }}
                         >
                             <img className="asteroid-image" src={asteroid1} />
-                            <div className="asteroid-word">{point.word[0]}</div>
+                            <div className="asteroid-word">{point.word}</div>
                         </div>
                     ))}
                 </div>
