@@ -60,3 +60,23 @@
     from { opacity: 1; }
     to { opacity: 0; }
 }
+
+.asteroid {
+    transform: translate(-50%, -50%);
+    width: fit-content;
+}
+
+.asteroid img {
+    position: absolute;
+
+    min-width: 100px;
+    width: 150%;
+
+    transform: translate(-50%, -50%);
+}
+
+.asteroid .asteroid-word {
+    transform: translate(-50%, -50%);
+
+    font-size: 1.5rem;
+}
