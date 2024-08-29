@@ -105,7 +105,7 @@ const Asteroids = ({ verse, input, setInput }: AsteroidProps) => {
     }, [verseWords]); // Re-run this effect when verseWords or points change
 
     useEffect(() => {
-        if (visiblePoints.length === 0 && pointId < verseWords.length-1) {
+        if (visiblePoints.length === 0 && pointId < verseWords.length) {
             setPointId((prevId) => {
                 const randomIndex = Math.floor(Math.random() * points.length);
                 const selectedPoint = points[randomIndex];
