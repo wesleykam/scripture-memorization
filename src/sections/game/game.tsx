@@ -98,7 +98,7 @@ const Game = () => {
         const interval = setInterval(() => {
             if (isAnimationStopped.current) return; // Stop spawning new circles
 
-            if (pointId.current >= verseWords.length - 1) {
+            if (pointId.current >= verseWords.length) {
                 clearInterval(interval);
                 console.log('all asteroids spawned');
                 return;
