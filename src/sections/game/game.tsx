@@ -29,10 +29,10 @@ const Game = () => {
     const [gameState, setGameState] = useState(0); // 0 = not started, 1 = playing, 2 = win, 3 = lose
 
     const verse = useRef<Verse>({
-        book: 'Genesis',
-        chapter: 1,
+        book: 'Romans',
+        chapter: 8,
         start_verse: 1,
-        end_verse: 0,
+        end_verse: 39,
     });
     const typingMode = useRef(1); // 0 = Regular, 1 = Typeracer
 
