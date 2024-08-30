@@ -96,47 +96,53 @@ const Game = () => {
             nextWordRef.current = verseWords[0].toLowerCase();
 
         const interval = setInterval(() => {
-            if (isAnimationStopped.current) return; // Stop spawning new circles
+            if (isAnimationStopped.current) return;
 
             if (pointId.current >= verseWords.length) {
                 clearInterval(interval);
                 console.log('all asteroids spawned');
-                return;
+                return; // Exit early to avoid adding more points
             }
 
-            const randomIndex = Math.floor(Math.random() * points.length);
-            const selectedPoint = points[randomIndex];
 
-            setVisiblePoints((prevPoints) => [
-                ...prevPoints,
-                {
+            setVisiblePoints((prevPoints) => {
+                const randomIndex = Math.floor(Math.random() * points.length);
+                const selectedPoint = points[randomIndex];
+
+                const newPoint = {
                     ...selectedPoint,
                     id: pointId.current,
-                    word: verseWords[pointId.current++], // Use the latest verseWords here
-                },
-            ]);
+                    word: verseWords[pointId.current],
+                };
+
+                pointId.current++; // Increment here after the point is created
+                return [...prevPoints, newPoint];
+            });
         }, 1000); // Adjust the interval as necessary
+
+        return () => clearInterval(interval);
     }, [verseWords]); // Re-run this effect when verseWords or points change
 
     // Spawn asteroid immediately when empty
     useEffect(() => {
-        console.log(visiblePoints.length);
         if (
             pointId.current > 0 &&
             visiblePoints.length === 0 &&
             pointId.current < verseWords.length
         ) {
-            const randomIndex = Math.floor(Math.random() * points.length);
-            const selectedPoint = points[randomIndex];
+            setVisiblePoints((prevPoints) => {
+                const randomIndex = Math.floor(Math.random() * points.length);
+                const selectedPoint = points[randomIndex];
 
-            setVisiblePoints((prevPoints) => [
-                ...prevPoints,
-                {
+                const newPoint = {
                     ...selectedPoint,
                     id: pointId.current,
-                    word: verseWords[pointId.current++], // Use the latest verseWords here
-                },
-            ]);
+                    word: verseWords[pointId.current],
+                };
+
+                pointId.current++; // Increment here after the point is created
+                return [...prevPoints, newPoint];
+            });
         }
     }, [visiblePoints.length]);
 
@@ -265,6 +271,10 @@ const Game = () => {
                 }
             }
         });
+
+        return () => {
+            document.body.removeEventListener('keydown', () => {});
+        };
     }, []);
 
     return (
