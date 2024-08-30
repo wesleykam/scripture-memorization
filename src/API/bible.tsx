@@ -1,4 +1,4 @@
-import { bible_books_index } from '../data/bibleData';
+// import { bible_books_index } from '../data/bibleData';
 
 import axios from 'axios';
 
