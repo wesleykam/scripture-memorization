@@ -35,7 +35,7 @@ const Game = () => {
         end_verse: 39,
     });
     const typingMode = useRef(1); // 0 = Regular, 1 = Typeracer
-    const asteroidMode = useRef(2); // 0 = Whole Word, 1 = Initials, 2 = Nothing  
+    const asteroidMode = useRef(0); // 0 = Whole Word, 1 = Initials, 2 = Nothing  
 
     // (in the future, randomize betweeen word and initials and nothing? 
     // will probably need to give asteroids their setting when they are created (visiblePoints))
