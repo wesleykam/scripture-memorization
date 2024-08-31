@@ -215,7 +215,7 @@ const Game = () => {
                     }
 
                     // Determine how much to move the point towards the center
-                    const speed = 0.75; // Adjust speed as necessary
+                    const speed = 0.50; // Adjust speed as necessary
                     const moveX = (dx / distance) * speed;
                     const moveY = (dy / distance) * speed;
 
@@ -292,6 +292,7 @@ const Game = () => {
                                 position: 'absolute',
                                 left: `${point.x}px`,
                                 top: `${point.y}px`,
+                                zIndex: -1 * point.id,
                             }}
                         >
                             <img className="asteroid-image" src={asteroid1} />
