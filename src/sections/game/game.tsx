@@ -35,6 +35,10 @@ const Game = () => {
         end_verse: 39,
     });
     const typingMode = useRef(1); // 0 = Regular, 1 = Typeracer
+    const asteroidMode = useRef(0); // 0 = Whole Word, 1 = Initials, 2 = Nothing  
+
+    // (in the future, randomize betweeen word and initials and nothing? 
+    // will probably need to give asteroids their setting when they are created (visiblePoints))
 
     const nextWordRef = useRef('');
     const [visiblePoints, setVisiblePoints] = useState<MovingPoint[]>([]);
@@ -103,7 +107,6 @@ const Game = () => {
                 console.log('all asteroids spawned');
                 return; // Exit early to avoid adding more points
             }
-
 
             setVisiblePoints((prevPoints) => {
                 const randomIndex = Math.floor(Math.random() * points.length);
@@ -212,7 +215,7 @@ const Game = () => {
                     }
 
                     // Determine how much to move the point towards the center
-                    const speed = 0.5; // Adjust speed as necessary
+                    const speed = 0.75; // Adjust speed as necessary
                     const moveX = (dx / distance) * speed;
                     const moveY = (dy / distance) * speed;
 
@@ -292,7 +295,17 @@ const Game = () => {
                             }}
                         >
                             <img className="asteroid-image" src={asteroid1} />
-                            <div className="asteroid-word">{point.word}</div>
+                            <div className="asteroid-word" 
+                                style={{
+                                    opacity: asteroidMode.current === 2 ? 0 : 1
+                                }}
+                            >
+                                {asteroidMode.current === 0
+                                    ? point.word
+                                    : asteroidMode.current === 1
+                                    ? point.word[0]
+                                    : point.word}
+                            </div>
                         </div>
                     ))}
                 </div>
