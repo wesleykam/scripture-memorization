@@ -4,7 +4,7 @@
 
     background-color: var(--color-tertiary);
 
-    width:30%;
+    width: 30%;
     height: 100vh;
 
     padding: var(--padding-md);
@@ -31,9 +31,19 @@ button.game-start {
     background-color: lightblue;
     margin-top: 20px;
     transition: transform 0.5s ease;
-  }
-  
-  .slide-right {
+}
+
+.slide-right {
     transform: translateX(100%);
-  }
-  
+}
+
+.verse-selector {
+    display: flex;
+    gap: 10px; /* Adjust gap as needed */
+    flex-wrap: wrap;
+}
+
+select {
+    padding: 5px;
+    font-size: 16px;
+}

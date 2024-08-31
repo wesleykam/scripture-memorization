@@ -31,8 +31,8 @@ const Game = () => {
     const verse = useRef<Verse>({
         book: 'Romans',
         chapter: 8,
-        start_verse: 1,
-        end_verse: 39,
+        start_verse: 28,
+        end_verse: 0,
     });
     const typingMode = useRef(1); // 0 = Regular, 1 = Typeracer
     const asteroidMode = useRef(0); // 0 = Whole Word, 1 = Initials, 2 = Nothing  
@@ -320,7 +320,7 @@ const Game = () => {
             <div className="spaceship">
                 <img src={spaceship} />
             </div>
-            <Menu setGameState={setGameState} verse={verse} />
+            <Menu setGameState={setGameState} verse={verse} typingMode={typingMode} asteroidMode={asteroidMode} />
         </section>
     );
 };
