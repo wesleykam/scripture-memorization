@@ -11,18 +11,28 @@ interface Verse {
 }
 
 interface MenuProps {
+    gameState: number;
     setGameState: (state: number) => void;
     verse: React.MutableRefObject<Verse>;
     typingMode: React.MutableRefObject<number>;
     asteroidMode: React.MutableRefObject<number>;
+    isAnimationStopped: React.MutableRefObject<boolean>;
 }
 
-const menu = ({ setGameState, verse, typingMode, asteroidMode }: MenuProps) => {
-    const [isSliding, setIsSliding] = useState<boolean>(false);
+const menu = ({
+    gameState,
+    setGameState,
+    verse,
+    typingMode,
+    asteroidMode,
+    isAnimationStopped,
+}: MenuProps) => {
+    // const [isSliding, setIsSliding] = useState<boolean>(false);
 
     const handleSlide = (e: React.MouseEvent<HTMLButtonElement>) => {
-        setIsSliding(!isSliding);
+        // setIsSliding(!isSliding);
         setGameState(1);
+        isAnimationStopped.current = false;
 
         // unfocus the button
         (e.target as HTMLButtonElement).blur();
@@ -126,7 +136,7 @@ const menu = ({ setGameState, verse, typingMode, asteroidMode }: MenuProps) => {
     return (
         <>
             <section
-                className={`menu-section ${isSliding ? 'slide-right' : ''}`}
+                className={`menu-section ${gameState ? 'slide-right' : ''}`}
             >
                 <div>
                     <h2>Menu</h2>
@@ -221,7 +231,7 @@ const menu = ({ setGameState, verse, typingMode, asteroidMode }: MenuProps) => {
                 </select>
 
                 <button className="button.game-start" onClick={handleSlide}>
-                    {isSliding ? 'Reset' : 'Start'}
+                    {'Start'}
                 </button>
             </section>
         </>
