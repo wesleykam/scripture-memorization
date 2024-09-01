@@ -1,106 +1,136 @@
 * {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
 
-  overflow: hidden;
+    /* overflow:hidden; */
 
-  color: var(--color-secondary);
+    color: var(--color-secondary);
 
-  background-image: url("./assets/stars.png");
-  background-size: cover;
-  background-color: var(--color-primary);
+    background-image: url('./assets/stars.png');
+    background-size: cover;
+    background-color: var(--color-primary);
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 
-  /* Colors */
-  --color-primary: #17001f;
-  --color-secondary: #ffffff;
-  --color-tertiary: #90005b;
-  --color-quaternary: #f0f0f0;
-  --gray10: hsl(0, 0%, 10%);
-  --gray30: hsl(0, 0%, 30%);
-  --gray50: hsl(0, 0%, 50%);
-  --gray70: hsl(0, 0%, 70%);
-  --gray90: hsl(0, 0%, 90%);
+    /* Colors */
+    --color-primary: #17001f;
+    --color-secondary: #ffffff;
+    --color-tertiary: #90005b;
+    --color-quaternary: #f0f0f0;
+    --gray10: hsl(0, 0%, 10%);
+    --gray30: hsl(0, 0%, 30%);
+    --gray50: hsl(0, 0%, 50%);
+    --gray70: hsl(0, 0%, 70%);
+    --gray90: hsl(0, 0%, 90%);
 
-  /* Font-sizes */
-  --font-xxs: 0.75rem;
-  --font-xs: 0.875rem;
-  --font-sm: 1rem;
-  --font-md: 1.125rem;
-  --font-lg: 1.25rem;
-  --font-xl: 1.5rem;
-  --font-xxl: 2rem;
+    /* Font-sizes */
+    --font-xxs: 0.75rem;
+    --font-xs: 0.875rem;
+    --font-sm: 1rem;
+    --font-md: 1.125rem;
+    --font-lg: 1.25rem;
+    --font-xl: 1.5rem;
+    --font-xxl: 2rem;
 
-  /* Margins */
-  --margin-xxs: 0.25rem;
-  --margin-xs: 0.5rem;
-  --margin-sm: 1rem;
-  --margin-md: 1.5rem;
-  --margin-lg: 2rem;
-  --margin-xl: 3rem;
-  --margin-xxl: 4rem;
+    /* Margins */
+    --margin-xxs: 0.25rem;
+    --margin-xs: 0.5rem;
+    --margin-sm: 1rem;
+    --margin-md: 1.5rem;
+    --margin-lg: 2rem;
+    --margin-xl: 3rem;
+    --margin-xxl: 4rem;
 
-  /* Paddings */
-  --padding-xxs: 0.25rem;
-  --padding-xs: 0.5rem;
-  --padding-sm: 1rem;
-  --padding-md: 1.5rem;
-  --padding-lg: 2rem;
-  --padding-xl: 3rem;
-  --padding-xxl: 4rem;
+    /* Paddings */
+    --padding-xxs: 0.25rem;
+    --padding-xs: 0.5rem;
+    --padding-sm: 1rem;
+    --padding-md: 1.5rem;
+    --padding-lg: 2rem;
+    --padding-xl: 3rem;
+    --padding-xxl: 4rem;
 
-  /* Tags */
-  --ff: 'Inter', sans-serif;
-  --h1: bold 4rem/1em var(--ff);
-  --h2: bold 3rem/1.2em var(--ff);
-  --h3: bold 2.25rem/1.2em var(--ff);
-  --h4: bold 1.5rem/1.6em var(--ff);
-  --big: 1.25rem/1.6em var(--ff);
-  --p: 1.5rem/1.6em var(--ff);
-  --small: .75rem/2em var(--ff);
+    /* Tags */
+    --ff: 'Inter', sans-serif;
+    --h1: bold 4rem/1em var(--ff);
+    --h2: bold 3rem/1.2em var(--ff);
+    --h3: bold 2.25rem/1.2em var(--ff);
+    --h4: bold 1.5rem/1.6em var(--ff);
+    --big: 1.25rem/1.6em var(--ff);
+    --p: 1.5rem/1.6em var(--ff);
+    --small: 0.75rem/2em var(--ff);
 }
 
 body {
-  height: 100vh;
+    height: 100vh;
 }
 
 h1 {
-  font: var(--h1);
+    font: var(--h1);
 }
 
 h2 {
-  font: var(--h2);
+    font: var(--h2);
 }
 
 h3 {
-  font: var(--h3);
+    font: var(--h3);
 }
 
 h4 {
-  font: var(--h4);
+    font: var(--h4);
 }
 
 p {
-  font: var(--p);
+    font: var(--p);
 }
 
 button {
-  font: var(--p);
-  cursor: pointer;
+    font: var(--p);
+    cursor: pointer;
 
-  padding: var(--padding-xs) var(--padding-sm);
-  border: none;
-  border-radius: 5px;
+    padding: var(--padding-xs) var(--padding-sm);
+    border: none;
+    border-radius: 5px;
 }
 
+.mobile-warning {
+    opacity: 0;
 
+    position: absolute;
+
+    height: 100vh;
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    gap: 2rem;
+
+    box-sizing: border-box;
+
+    padding: 5rem;
+
+    background-color: rgba(0, 0, 0, 0.388);
+}
+
+.mobile-warning p {
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+    .mobile-warning {
+        opacity: 1;
+    }
+}

@@ -19,6 +19,12 @@
     transition: transform 1s ease;
 }
 
+@media (max-width: 768px) {
+  .menu-section {
+    display: none;
+  }
+}
+
 button.game-start {
     width: 50%;
 
