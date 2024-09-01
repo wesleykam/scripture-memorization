@@ -3,6 +3,8 @@ import { useEffect, useState, useRef } from 'react';
 import spaceship from '../../assets/spaceship.png';
 import asteroid1 from '../../assets/asteroid1.png';
 import Menu from '../menu/menu';
+import EndMenu from '../endMenu/endMenu';
+
 import getVerses from '../../API/bible';
 
 import './game.css';
@@ -35,9 +37,9 @@ const Game = () => {
         end_verse: 0,
     });
     const typingMode = useRef(1); // 0 = Regular, 1 = Typeracer
-    const asteroidMode = useRef(0); // 0 = Whole Word, 1 = Initials, 2 = Nothing  
+    const asteroidMode = useRef(0); // 0 = Whole Word, 1 = Initials, 2 = Nothing
 
-    // (in the future, randomize betweeen word and initials and nothing? 
+    // (in the future, randomize betweeen word and initials and nothing?
     // will probably need to give asteroids their setting when they are created (visiblePoints))
 
     const nextWordRef = useRef('');
@@ -52,7 +54,7 @@ const Game = () => {
     const radiusX = screenWidth * 0.45; // horizontal radius
     const radiusY = screenHeight * 0.45; // vertical radius
     const numberOfPoints = 20; // number of points around the oval
-    const isAnimationStopped = useRef(false); // useRef to track animation state
+    const isAnimationStopped = useRef(true); // useRef to track animation state
 
     const generateOvalPoints = (
         numPoints: number,
@@ -147,6 +149,14 @@ const Game = () => {
                 return [...prevPoints, newPoint];
             });
         }
+
+        if (
+            verseWords.length > 0 &&
+            pointId.current >= verseWords.length &&
+            visiblePoints.length <= 0
+        ) {
+            setGameState(4);
+        }
     }, [visiblePoints.length]);
 
     useEffect(() => {
@@ -212,10 +222,11 @@ const Game = () => {
                             `Point ${point.id} has reached the center.`
                         );
                         isAnimationStopped.current = true; // Stop all animations
+                        setGameState(3); // Set game state to lose
                     }
 
                     // Determine how much to move the point towards the center
-                    const speed = 0.50; // Adjust speed as necessary
+                    const speed = 0.5; // Adjust speed as necessary
                     const moveX = (dx / distance) * speed;
                     const moveY = (dy / distance) * speed;
 
@@ -232,7 +243,7 @@ const Game = () => {
 
         const animationId = requestAnimationFrame(movePoints);
         return () => cancelAnimationFrame(animationId);
-    }, []);
+    }, [gameState]);
 
     useEffect(() => {
         // add an event listener to the document to listen for key presses
@@ -281,47 +292,73 @@ const Game = () => {
     }, []);
 
     return (
-        <section className="game-section">
-            {gameState === 1 ? (
-                <div>
-                    {visiblePoints.map((point, index) => (
-                        <div
-                            key={index}
-                            className="asteroid"
-                            style={{
-                                position: 'absolute',
-                                left: `${point.x}px`,
-                                top: `${point.y}px`,
-                                zIndex: -1 * point.id,
-                            }}
-                        >
-                            <img className="asteroid-image" src={asteroid1} />
-                            <div className="asteroid-word" 
+        <>
+            <section className="game-section">
+                {gameState === 1 ? (
+                    <div>
+                        {visiblePoints.map((point, index) => (
+                            <div
+                                key={index}
+                                className="asteroid"
                                 style={{
-                                    opacity: asteroidMode.current === 2 ? 0 : 1
+                                    position: 'absolute',
+                                    left: `${point.x}px`,
+                                    top: `${point.y}px`,
+                                    zIndex: -1 * point.id,
                                 }}
                             >
-                                {asteroidMode.current === 0
-                                    ? point.word
-                                    : asteroidMode.current === 1
-                                    ? point.word[0]
-                                    : point.word}
+                                <img
+                                    className="asteroid-image"
+                                    src={asteroid1}
+                                />
+                                <div
+                                    className="asteroid-word"
+                                    style={{
+                                        opacity:
+                                            asteroidMode.current === 2 ? 0 : 1,
+                                    }}
+                                >
+                                    {asteroidMode.current === 0
+                                        ? point.word
+                                        : asteroidMode.current === 1
+                                        ? point.word[0]
+                                        : point.word}
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
+                ) : (
+                    <></>
+                )}
+                <div className="user-input">
+                    <h2>{input}</h2>
+                    <div className="cursor"></div>
                 </div>
+                <div className="spaceship">
+                    <img src={spaceship} />
+                </div>
+            </section>
+            <Menu
+                gameState={gameState}
+                setGameState={setGameState}
+                verse={verse}
+                typingMode={typingMode}
+                asteroidMode={asteroidMode}
+                isAnimationStopped={isAnimationStopped}
+            />
+            {gameState === 3 || gameState === 4 ? (
+                <EndMenu
+                    setGameState={setGameState}
+                    nextWordRef={nextWordRef}
+                    pointId={pointId}
+                    setVerseWords={setVerseWords}
+                    setVisiblePoints={setVisiblePoints}
+                    isAnimationStopped={isAnimationStopped}
+                />
             ) : (
                 <></>
             )}
-            <div className="user-input">
-                <h2>{input}</h2>
-                <div className="cursor"></div>
-            </div>
-            <div className="spaceship">
-                <img src={spaceship} />
-            </div>
-            <Menu setGameState={setGameState} verse={verse} typingMode={typingMode} asteroidMode={asteroidMode} />
-        </section>
+        </>
     );
 };
 
