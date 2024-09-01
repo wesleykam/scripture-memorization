@@ -32,8 +32,6 @@ const endMenu = ({
         nextWordRef.current = '';
         pointId.current = 0;
         setVerseWords([]);
-        isAnimationStopped.current = false;
-
     };
 
     const handleRestart = () => {

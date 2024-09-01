@@ -49,9 +49,12 @@ interface Verse {
 
 const getVerses = (verse: Verse) => {
     return axios
-        .post('https://bible-proxy-server-37ledwqo3a-wl.a.run.app/getVerses', {
-            verse,
-        })
+        .post(
+            'https://bible-proxy-server-349606288245.us-west2.run.app/getVerses',
+            {
+                verse,
+            }
+        )
         .then((response) => {
             return response.data.words;
         })
