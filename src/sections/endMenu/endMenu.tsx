@@ -15,7 +15,6 @@ interface EndMenuProps {
     nextWordRef: React.MutableRefObject<string>;
     pointId: React.MutableRefObject<number>;
     setVerseWords: (state: string[]) => void;
-    setDirtyVerseWords: (state: string[]) => void;
     setVisiblePoints: (state: MovingPoint[]) => void;
     isAnimationStopped: React.MutableRefObject<boolean>;
 }
@@ -25,7 +24,6 @@ const endMenu = ({
     nextWordRef,
     pointId,
     setVerseWords,
-    setDirtyVerseWords,
     setVisiblePoints,
     isAnimationStopped,
 }: EndMenuProps) => {
@@ -34,7 +32,6 @@ const endMenu = ({
         nextWordRef.current = '';
         pointId.current = 0;
         setVerseWords([]);
-        setDirtyVerseWords([]);
     };
 
     const handleRestart = () => {
@@ -42,7 +39,6 @@ const endMenu = ({
         nextWordRef.current = '';
         pointId.current = 0;
         setVerseWords([]);
-        setDirtyVerseWords([]);
         setVisiblePoints([]);
         isAnimationStopped.current = false;
     };

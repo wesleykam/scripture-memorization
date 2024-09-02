@@ -50,14 +50,13 @@ interface Verse {
 const getVerses = (verse: Verse) => {
     return axios
         .post(
-            // 'https://bible-proxy-server-349606288245.us-west2.run.app/getVerses',
-            'http://localhost:3000/getVerses',
+            'https://bible-proxy-server-349606288245.us-west2.run.app/getVerses',
             {
                 verse,
             }
         )
         .then((response) => {
-            return response.data;
+            return response.data.words;
         })
         .catch((error) => {
             console.error('Error fetching verses:', error);
