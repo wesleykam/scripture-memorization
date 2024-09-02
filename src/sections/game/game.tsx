@@ -161,6 +161,7 @@ const Game = () => {
             pointId.current >= verseWords.length &&
             visiblePoints.length <= 0
         ) {
+            isAnimationStopped.current = true; // Stop all animations
             setGameState(4);
         }
     }, [visiblePoints.length]);

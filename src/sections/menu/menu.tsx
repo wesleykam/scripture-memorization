@@ -27,10 +27,8 @@ const menu = ({
     asteroidMode,
     isAnimationStopped,
 }: MenuProps) => {
-    // const [isSliding, setIsSliding] = useState<boolean>(false);
 
     const handleSlide = (e: React.MouseEvent<HTMLButtonElement>) => {
-        // setIsSliding(!isSliding);
         setGameState(1);
         isAnimationStopped.current = false;
 
