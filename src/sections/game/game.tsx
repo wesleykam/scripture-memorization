@@ -46,6 +46,9 @@ const Game = () => {
     const [visiblePoints, setVisiblePoints] = useState<MovingPoint[]>([]);
     const pointId = useRef(0);
     const [verseWords, setVerseWords] = useState<string[]>([]);
+    const [dirtyVerseWords, setDirtyVerseWords] = useState<string[]>([]);
+
+    const [currCompletion, setCurrCompletion] = useState("");
 
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
@@ -81,6 +84,7 @@ const Game = () => {
             setVisiblePoints([]);
             pointId.current = 0;
             setVerseWords([]);
+            setDirtyVerseWords([]);
 
             return;
         } // Do not fetch if game is not started
@@ -88,7 +92,9 @@ const Game = () => {
         if (verseWords.length > 0) return; // Do not fetch if verseWords is already
 
         getVerses(verse.current).then((data) => {
-            setVerseWords(data);
+            console.log(data);
+            setVerseWords(data.words);
+            setDirtyVerseWords(data.dirtyWords);
         });
     }, [gameState]);
 
@@ -352,6 +358,7 @@ const Game = () => {
                     nextWordRef={nextWordRef}
                     pointId={pointId}
                     setVerseWords={setVerseWords}
+                    setDirtyVerseWords={setDirtyVerseWords}
                     setVisiblePoints={setVisiblePoints}
                     isAnimationStopped={isAnimationStopped}
                 />
