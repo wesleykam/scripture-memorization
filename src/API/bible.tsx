@@ -56,7 +56,7 @@ const getVerses = (verse: Verse) => {
             }
         )
         .then((response) => {
-            return response.data.words;
+            return response.data;
         })
         .catch((error) => {
             console.error('Error fetching verses:', error);

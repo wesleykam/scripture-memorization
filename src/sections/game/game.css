@@ -57,8 +57,31 @@
 }
 
 @keyframes blink {
-    from { opacity: 1; }
-    to { opacity: 0; }
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/*  */
+.completion {
+    position: absolute;
+    bottom: 0;
+
+    max-width: 80%;
+    height: 2lh;
+    overflow: hidden;
+    
+
+    margin-bottom: var(--margin-lg);
+
+    display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    direction: rtl;
+    text-align: left;
 }
 
 .asteroid {

@@ -46,6 +46,9 @@ const Game = () => {
     const [visiblePoints, setVisiblePoints] = useState<MovingPoint[]>([]);
     const pointId = useRef(0);
     const [verseWords, setVerseWords] = useState<string[]>([]);
+    const [dirtyVerseWords, setDirtyVerseWords] = useState<string[]>([]);
+
+    const [currCompletion, setCurrCompletion] = useState('');
 
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
@@ -81,6 +84,7 @@ const Game = () => {
             setVisiblePoints([]);
             pointId.current = 0;
             setVerseWords([]);
+            setDirtyVerseWords([]);
 
             return;
         } // Do not fetch if game is not started
@@ -88,7 +92,9 @@ const Game = () => {
         if (verseWords.length > 0) return; // Do not fetch if verseWords is already
 
         getVerses(verse.current).then((data) => {
-            setVerseWords(data);
+            console.log(data);
+            setVerseWords(data.words);
+            setDirtyVerseWords(data.dirtyWords);
         });
     }, [gameState]);
 
@@ -165,6 +171,10 @@ const Game = () => {
         setVisiblePoints((prevPoints) => {
             if (typingMode.current === 0) {
                 if (input === nextWordRef.current) {
+                    setCurrCompletion(
+                        (prev) => prev + ' ' + dirtyVerseWords[prevPoints[0].id]
+                    );
+
                     const updatedPoints = prevPoints.slice(1);
                     if (updatedPoints.length > 0) {
                         nextWordRef.current = verseWords[updatedPoints[0].id];
@@ -182,6 +192,10 @@ const Game = () => {
             if (typingMode.current === 1) {
                 // Only proceed if `nextWordRef.current` is empty
                 if (nextWordRef.current.length === 0) {
+                    setCurrCompletion(
+                        (prev) => prev + ' ' + dirtyVerseWords[prevPoints[0].id]
+                    );
+
                     // Update `nextWordRef.current` with the new word
                     const updatedPoints = prevPoints.slice(1);
                     if (updatedPoints.length > 0) {
@@ -337,6 +351,9 @@ const Game = () => {
                 <div className="spaceship">
                     <img src={spaceship} />
                 </div>
+                <div className="completion">
+                    <p>{currCompletion}</p>
+                </div>
             </section>
             <Menu
                 gameState={gameState}
@@ -352,6 +369,8 @@ const Game = () => {
                     nextWordRef={nextWordRef}
                     pointId={pointId}
                     setVerseWords={setVerseWords}
+                    setDirtyVerseWords={setDirtyVerseWords}
+                    setCurrCompletion={setCurrCompletion}
                     setVisiblePoints={setVisiblePoints}
                     isAnimationStopped={isAnimationStopped}
                 />
