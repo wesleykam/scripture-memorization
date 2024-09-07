@@ -1,33 +1,25 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 
 import spaceship from '../../assets/spaceship.png';
-import asteroid1 from '../../assets/asteroid1.png';
 import Menu from '../menu/menu';
 import EndMenu from '../endMenu/endMenu';
 
 import getVerses from '../../API/bible';
 
 import './game.css';
+import Asteroid from '../../components/Asteroid/Asteroid';
+import { generateOvalPoints } from '../../utils/gameHelpers';
+import Input from '../../components/Input/Input';
 
-interface Verse {
-    book: string;
-    chapter: number;
-    start_verse: number;
-    end_verse: number;
-}
+import { Verse, MovingPoint } from '../../utils/types';
+import { useQuery } from '@tanstack/react-query';
 
-interface Point {
-    x: number;
-    y: number;
-}
-
-interface MovingPoint extends Point {
-    id: number; // unique identifier for each point
-    word: string; // word associated with the point
-}
+const SCREEN_WIDTH = window.innerWidth;
+const SCREEN_HEIGHT = window.innerHeight;
+const CENTER_X = SCREEN_WIDTH / 2;
+const CENTER_Y = SCREEN_HEIGHT / 2;
 
 const Game = () => {
-    const [input, setInput] = useState('');
     const [gameState, setGameState] = useState(0); // 0 = not started, 1 = playing, 2 = win, 3 = lose
 
     const verse = useRef<Verse>({
@@ -50,37 +42,38 @@ const Game = () => {
 
     const [currCompletion, setCurrCompletion] = useState('');
 
-    const screenWidth = window.innerWidth;
-    const screenHeight = window.innerHeight;
-    const centerX = screenWidth / 2;
-    const centerY = screenHeight / 2;
-    const radiusX = screenWidth * 0.45; // horizontal radius
-    const radiusY = screenHeight * 0.45; // vertical radius
-    const numberOfPoints = 20; // number of points around the oval
     const isAnimationStopped = useRef(true); // useRef to track animation state
 
-    const generateOvalPoints = (
-        numPoints: number,
-        radiusX: number,
-        radiusY: number
-    ): Point[] => {
-        const points: Point[] = [];
-        const angleStep = (2 * Math.PI) / numPoints;
+    const points = useMemo(() => {
+        return generateOvalPoints();
+    }, []);
 
-        for (let i = 0; i < numPoints; i++) {
-            const angle = i * angleStep;
-            const x = centerX + radiusX * Math.cos(angle);
-            const y = centerY + radiusY * Math.sin(angle);
-            points.push({ x, y });
-        }
+    const result = useQuery({
+        queryKey: ['verses', verse.current],
+        queryFn: getVerses,
+        enabled: gameState === 1 && verseWords.length === 0, // Only fetch if game has started and verseWords is empty
+    });
 
-        return points;
-    };
+    // Handle the result outside of useEffect
+    if (result.isLoading) {
+        console.log('Loading...');
+    }
 
-    const points = generateOvalPoints(numberOfPoints, radiusX, radiusY);
+    if (result.isError) {
+        console.log('Error fetching verses:', result.error);
+    }
+
+    if (result.isSuccess && verseWords.length === 0) {
+        // Set verseWords and dirtyVerseWords when data is successfully fetched
+        setVerseWords(result.data.words);
+        setDirtyVerseWords(result.data.dirtyWords);
+    }
 
     useEffect(() => {
+        console.log('gameState:', gameState);
+
         if (gameState === 0) {
+            console.log('reset');
             setVisiblePoints([]);
             pointId.current = 0;
             setVerseWords([]);
@@ -88,19 +81,11 @@ const Game = () => {
 
             return;
         } // Do not fetch if game is not started
-
-        if (verseWords.length > 0) return; // Do not fetch if verseWords is already
-
-        getVerses(verse.current).then((data) => {
-            console.log(data);
-            setVerseWords(data.words);
-            setDirtyVerseWords(data.dirtyWords);
-        });
     }, [gameState]);
 
     // Spawn asteroids on an interval
     useEffect(() => {
-        if (verseWords.length === 0) return; // Ensure verseWords is loaded
+        if (verseWords.length === 0 || gameState != 1) return; // Ensure verseWords is loaded
 
         // Set the first word to type
         if (typingMode.current === 0) nextWordRef.current = verseWords[0];
@@ -132,10 +117,12 @@ const Game = () => {
         }, 1000); // Adjust the interval as necessary
 
         return () => clearInterval(interval);
-    }, [verseWords]); // Re-run this effect when verseWords or points change
+    }, [verseWords, gameState]); // Re-run this effect when verseWords or game state change
 
     // Spawn asteroid immediately when empty
     useEffect(() => {
+        if (gameState != 1) return;
+
         if (
             pointId.current > 0 &&
             visiblePoints.length === 0 &&
@@ -167,67 +154,15 @@ const Game = () => {
     }, [visiblePoints.length]);
 
     useEffect(() => {
-        if (input === '') return;
+        if (gameState != 1) return; // on run when game starts
 
-        setVisiblePoints((prevPoints) => {
-            if (typingMode.current === 0) {
-                if (input === nextWordRef.current) {
-                    setCurrCompletion(
-                        (prev) => prev + ' ' + dirtyVerseWords[prevPoints[0].id]
-                    );
-
-                    const updatedPoints = prevPoints.slice(1);
-                    if (updatedPoints.length > 0) {
-                        nextWordRef.current = verseWords[updatedPoints[0].id];
-                    } else {
-                        nextWordRef.current =
-                            pointId.current < verseWords.length
-                                ? verseWords[pointId.current]
-                                : '';
-                    }
-                    setInput('');
-                    return updatedPoints;
-                }
-            }
-
-            if (typingMode.current === 1) {
-                // Only proceed if `nextWordRef.current` is empty
-                if (nextWordRef.current.length === 0) {
-                    setCurrCompletion(
-                        (prev) => prev + ' ' + dirtyVerseWords[prevPoints[0].id]
-                    );
-
-                    // Update `nextWordRef.current` with the new word
-                    const updatedPoints = prevPoints.slice(1);
-                    if (updatedPoints.length > 0) {
-                        nextWordRef.current =
-                            verseWords[updatedPoints[0].id].toLowerCase();
-                    } else {
-                        nextWordRef.current =
-                            pointId.current < verseWords.length
-                                ? verseWords[pointId.current].toLowerCase()
-                                : '';
-                    }
-
-                    // Clear input
-                    setInput('');
-
-                    return updatedPoints; // Return the new state for `visiblePoints`
-                }
-            }
-
-            return prevPoints;
-        });
-    }, [input]);
-
-    useEffect(() => {
         const movePoints = () => {
             if (isAnimationStopped.current) return; // Stop moving circles
 
             setVisiblePoints((prevPoints) =>
                 prevPoints.map((point) => {
-                    const dx = centerX - point.x;
-                    const dy = centerY - point.y;
+                    const dx = CENTER_X - point.x;
+                    const dy = CENTER_Y - point.y;
                     const distance = Math.sqrt(dx * dx + dy * dy);
 
                     // Check if the point has reached the center
@@ -260,95 +195,31 @@ const Game = () => {
         return () => cancelAnimationFrame(animationId);
     }, [gameState]);
 
-    useEffect(() => {
-        // add an event listener to the document to listen for key presses
-        document.body.addEventListener('keydown', (e: KeyboardEvent) => {
-            if (nextWordRef.current.length === 0) return; // Ensure verseWords is loaded
-
-            if (typingMode.current === 0) {
-                // backspace
-                if (e.ctrlKey && e.key === 'Backspace') {
-                    setInput('');
-                    return;
-                }
-
-                if (e.key === 'Backspace') {
-                    setInput((prev) => prev.slice(0, -1));
-                    return;
-                }
-
-                // only allow alphabet characters
-                if (!e.key.match(/^[a-zA-Z]$/)) return;
-
-                // prevent repeating key presses
-                if (e.repeat) return;
-
-                setInput((prev) => prev + e.key);
-            }
-
-            if (typingMode.current === 1) {
-                // only allow alphabet characters
-                if (!e.key.match(/^[a-zA-Z]$/)) return;
-
-                // prevent repeating key presses
-                if (e.repeat) return;
-
-                // append the key pressed to the input state if equal to next letter in nextWord
-                if (e.key === nextWordRef.current[0]) {
-                    setInput((prev) => prev + e.key);
-                    nextWordRef.current = nextWordRef.current.slice(1);
-                }
-            }
-        });
-
-        return () => {
-            document.body.removeEventListener('keydown', () => {});
-        };
-    }, []);
-
     return (
         <>
             <section className="game-section">
                 {gameState === 1 ? (
-                    <div>
-                        {visiblePoints.map((point, index) => (
-                            <div
-                                key={index}
-                                className="asteroid"
-                                style={{
-                                    position: 'absolute',
-                                    left: `${point.x}px`,
-                                    top: `${point.y}px`,
-                                    zIndex: -1 * point.id,
-                                }}
-                            >
-                                <img
-                                    className="asteroid-image"
-                                    src={asteroid1}
-                                />
-                                <div
-                                    className="asteroid-word"
-                                    style={{
-                                        opacity:
-                                            asteroidMode.current === 2 ? 0 : 1,
-                                    }}
-                                >
-                                    {asteroidMode.current === 0
-                                        ? point.word
-                                        : asteroidMode.current === 1
-                                        ? point.word[0]
-                                        : point.word}
-                                </div>
-                            </div>
+                    <>
+                        {visiblePoints.map((point) => (
+                            <Asteroid
+                                key={point.id}
+                                point={point}
+                                asteroidMode={asteroidMode}
+                            />
                         ))}
-                    </div>
+                    </>
                 ) : (
                     <></>
                 )}
-                <div className="user-input">
-                    <h2>{input}</h2>
-                    <div className="cursor"></div>
-                </div>
+                <Input
+                    nextWordRef={nextWordRef}
+                    typingMode={typingMode}
+                    verseWords={verseWords}
+                    dirtyVerseWords={dirtyVerseWords}
+                    setVisiblePoints={setVisiblePoints}
+                    setCurrCompletion={setCurrCompletion}
+                    pointId={pointId}
+                />
                 <div className="spaceship">
                     <img src={spaceship} />
                 </div>

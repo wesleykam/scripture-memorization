@@ -1,8 +1,18 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Game from './sections/game/game';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,
+      gcTime: Infinity,
+    },
+  },
+});
 
 const App = () => {
     return (
-        <>
+        <QueryClientProvider client={queryClient}>
             <Game />
             <div className="mobile-warning">
                 <h1>Warning!</h1>
@@ -11,7 +21,7 @@ const App = () => {
                     on a desktop.
                 </p>
             </div>
-        </>
+        </QueryClientProvider>
     );
 };
 

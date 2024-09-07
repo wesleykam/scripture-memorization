@@ -38,14 +38,14 @@ const endMenu = ({
         setVerseWords([]);
         setDirtyVerseWords([]);
         setCurrCompletion('');
+
+        setVisiblePoints([]);
     };
 
     const handleRestart = () => {
         setGameState(1);
         nextWordRef.current = '';
         pointId.current = 0;
-        setVerseWords([]);
-        setDirtyVerseWords([]);
         setCurrCompletion('');
 
         setVisiblePoints([]);

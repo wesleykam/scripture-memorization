@@ -1,14 +1,9 @@
 import { useState } from 'react';
 import { bible_books_chapters_verses } from '../../data/bibleData';
 
-import './menu.css';
+import { Verse } from '../../utils/types';
 
-interface Verse {
-    book: string;
-    chapter: number;
-    start_verse: number;
-    end_verse: number;
-}
+import './menu.css';
 
 interface MenuProps {
     gameState: number;
@@ -19,7 +14,7 @@ interface MenuProps {
     isAnimationStopped: React.MutableRefObject<boolean>;
 }
 
-const menu = ({
+const Menu = ({
     gameState,
     setGameState,
     verse,
@@ -27,7 +22,6 @@ const menu = ({
     asteroidMode,
     isAnimationStopped,
 }: MenuProps) => {
-
     const handleSlide = (e: React.MouseEvent<HTMLButtonElement>) => {
         setGameState(1);
         isAnimationStopped.current = false;
@@ -54,7 +48,7 @@ const menu = ({
         setSelectedBook(book);
         setSelectedChapter(null);
         setSelectedStartVerse(null);
-        setSelectedEndVerse(null);
+        setSelectedEndVerse(0);
         verse.current.book = book;
     };
 
@@ -64,7 +58,7 @@ const menu = ({
         const chapter = parseInt(event.target.value);
         setSelectedChapter(chapter);
         setSelectedStartVerse(null);
-        setSelectedEndVerse(null);
+        setSelectedEndVerse(0);
         verse.current.chapter = chapter;
     };
 
@@ -73,7 +67,7 @@ const menu = ({
     ) => {
         const startVerse = parseInt(event.target.value);
         setSelectedStartVerse(startVerse);
-        setSelectedEndVerse(null);
+        setSelectedEndVerse(0);
         verse.current.start_verse = startVerse;
     };
 
@@ -81,7 +75,7 @@ const menu = ({
         event: React.ChangeEvent<HTMLSelectElement>
     ) => {
         const endVerse = parseInt(event.target.value);
-        setSelectedEndVerse(endVerse);
+        setSelectedEndVerse(0);
         verse.current.end_verse = endVerse;
     };
 
@@ -197,10 +191,9 @@ const menu = ({
                         onChange={handleEndVerseChange}
                         disabled={!selectedStartVerse}
                     >
-                        <option value="" disabled>
+                        <option value="0" >
                             Select End Verse
                         </option>
-                        <option value="0">None</option>
                         {getVerses()
                             .filter((verse) => verse >= selectedStartVerse!)
                             .map((verse) => (
@@ -236,4 +229,4 @@ const menu = ({
     );
 };
 
-export default menu;
+export default Menu;
