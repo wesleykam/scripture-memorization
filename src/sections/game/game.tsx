@@ -48,6 +48,13 @@ const Game = () => {
         return generateOvalPoints();
     }, []);
 
+    useEffect(() => {
+        if (gameState === 1) {
+            setVerseWords([]);
+            setDirtyVerseWords([]);
+        } // Do not fetch if game is not started
+    }, [gameState])
+
     const result = useQuery({
         queryKey: ['verses', verse.current],
         queryFn: getVerses,
@@ -68,20 +75,6 @@ const Game = () => {
         setVerseWords(result.data.words);
         setDirtyVerseWords(result.data.dirtyWords);
     }
-
-    useEffect(() => {
-        console.log('gameState:', gameState);
-
-        if (gameState === 0) {
-            console.log('reset');
-            setVisiblePoints([]);
-            pointId.current = 0;
-            setVerseWords([]);
-            setDirtyVerseWords([]);
-
-            return;
-        } // Do not fetch if game is not started
-    }, [gameState]);
 
     // Spawn asteroids on an interval
     useEffect(() => {
