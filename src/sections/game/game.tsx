@@ -61,15 +61,6 @@ const Game = () => {
         enabled: gameState === 1 && verseWords.length === 0, // Only fetch if game has started and verseWords is empty
     });
 
-    // Handle the result outside of useEffect
-    if (result.isLoading) {
-        console.log('Loading...');
-    }
-
-    if (result.isError) {
-        console.log('Error fetching verses:', result.error);
-    }
-
     if (result.isSuccess && verseWords.length === 0) {
         // Set verseWords and dirtyVerseWords when data is successfully fetched
         setVerseWords(result.data.words);
@@ -90,7 +81,6 @@ const Game = () => {
 
             if (pointId.current >= verseWords.length) {
                 clearInterval(interval);
-                console.log('all asteroids spawned');
                 return; // Exit early to avoid adding more points
             }
 
@@ -161,9 +151,6 @@ const Game = () => {
                     // Check if the point has reached the center
                     const threshold = 100; // Adjust the threshold as necessary
                     if (distance < threshold) {
-                        console.log(
-                            `Point ${point.id} has reached the center.`
-                        );
                         isAnimationStopped.current = true; // Stop all animations
                         setGameState(3); // Set game state to lose
                     }
