@@ -12,7 +12,7 @@ const getVerses = ({ queryKey }: QueryFunctionContext<[string, Verse]>) => {
         dirtyWords: string[];
     }> = axios
         .post(
-            'https://bible-proxy-server-dz5sy5z6m-wesleykams-projects.vercel.app/getVerses',
+            'https://bible-proxy-server-349606288245.us-west2.run.app/getVerses',
             {
                 verse,
             }
