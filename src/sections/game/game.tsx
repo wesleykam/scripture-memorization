@@ -41,7 +41,6 @@ const Game = () => {
     const [dirtyVerseWords, setDirtyVerseWords] = useState<string[]>([]);
 
     const [currCompletion, setCurrCompletion] = useState('');
-
     const isAnimationStopped = useRef(true); // useRef to track animation state
 
     const points = useMemo(() => {
@@ -53,7 +52,7 @@ const Game = () => {
             setVerseWords([]);
             setDirtyVerseWords([]);
         } // Do not fetch if game is not started
-    }, [gameState])
+    }, [gameState]);
 
     const result = useQuery({
         queryKey: ['verses', verse.current],
